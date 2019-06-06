@@ -21,8 +21,29 @@ The project uses data from a disaster relief effort. There is one raw feature co
 
 ### Methodology
 
-The ETL pipeline imports csv data, cleans the data, and stores it in a SQL database. After loading the data from the database, the NLP pipeline transforms the text using a "bag of words" approach that identifies word unigrams and bigrams in the text data to use as features. The "bag of words" features are transformed using a TF-IDF (term frequency - inverse document frequency) method, which adjusts the feature values to account for the frequency of term use throughout all of the message data. I also use the VADER sentiment analysis method to assign sentiment scores to each message. After concatenating the TF-IDF features and sentiment scores, I normalize the data. A Linear Support Vector Machine classifier is produced using the best hyper-parameters identified with grid search, where "best" is determined by the model's performance in cross-validation with a squared-hinge loss criterion.
+Pipeline:
+1. Extract, Transform, Load (ETL)
+2. Natural Language Processing (NLP)
+    * Bag of Words
+    * TF-IDF
+    * Sentiment analysis
+3. Normalize data
+4. Train Linear Support Vector Classifier (SVC)
+    * Select hyperparameters with Grid Search
+    * Evaluate with cross-validation and squared-hinge loss
+5. Evaluate performance on test dataset
+    * Metrics: precision, recall
+6. Import model to web application
+
+The ETL pipeline imports csv data, cleans the data, and stores it in a SQL database. After loading the data from the database, the NLP pipeline transforms the text using a "bag of words" approach that identifies word unigrams and bigrams in the text data to use as features. The "bag of words" features are transformed using a TF-IDF (term frequency - inverse document frequency) method, which adjusts the feature values to account for the frequency of each term's use throughout all of the message data. I also use the VADER sentiment analysis package within NLTK to assign sentiment scores to each message. After concatenating the TF-IDF features and sentiment scores, I normalize the data. I fit a Linear Support Vector Machine classifier using the best hyper-parameters identified with grid search, where "best" is determined by the model's performance in cross-validation with a squared-hinge loss criterion.
+
+I made the web application graphs with Plotly. Udacity provided the remainder of the web application components (i.e. HTML, CSS, Flask implementationm, Bootstrap.js implementation)
 
 The model achieves an average precision score of 0.54, recall score of 0.65, and F1 score of 0.59 across all 36 classes. 
 
 In other words, about 54% of messages belonging to a category are classified as belonging to that category by the model. Similarly, each classified message has about a 65% chance of being a true positive.
+
+
+### Required libraries
+
+This project uses Python 3 with Numpy, Pandas, Scikit-Learn, NLTK, SQLAlchemy, Plotly, Flask.
