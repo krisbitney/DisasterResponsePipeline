@@ -1,23 +1,37 @@
 import json
 import plotly
 import pandas as pd
+import joblib
 
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+nltk.download(['punkt', 'wordnet'])
 
 app = Flask(__name__)
 
+def tokenize(text):
+    tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+
+    clean_tokens = []
+    for tok in tokens:
+        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+        clean_tokens.append(clean_tok)
+
+    return clean_tokens
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('etl', engine)
 
 # load model
-model = joblib.load("../models/model.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -26,12 +40,19 @@ model = joblib.load("../models/model.pkl")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    
+
+    category_counts = df.iloc[:, 4:].sum()
+    category_counts = category_counts.sort_values(ascending=False)
+    categories_top5 = category_counts[0:5]
+    category_names_top5 = category_counts.index[0:5]
+    category_counts = category_counts.sort_values(ascending=True)
+    categories_bottom5 = category_counts[0:5]
+    category_names_bottom5 = category_counts.index[0:5]
+
+
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -49,6 +70,36 @@ def index():
                 'xaxis': {
                     'title': "Genre"
                 }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_names_top5,
+                    y=categories_top5
+                )
+            ],
+
+            'layout': {
+                'title': 'Five Most Common Message Types',
+                'yaxis': {
+                    'title': "Count"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_names_bottom5,
+                    y=categories_bottom5
+                )
+            ],
+
+            'layout': {
+                'title': 'Five Least Common Message Types',
+                'yaxis': {
+                    'title': "Count"
+                },
             }
         }
     ]
@@ -85,3 +136,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+

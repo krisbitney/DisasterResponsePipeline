@@ -2,7 +2,7 @@ from VaderSentiment import VaderSentiment
 
 import sys
 import re
-from sklearn.externals import joblib
+import joblib
 
 import pandas as pd
 from sqlalchemy import create_engine
@@ -32,7 +32,7 @@ def load_data(database_filepath):
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql('etl', engine)
     X = df.message.values
-    Y = df.iloc[:, 4:].copy()
+    Y = df.iloc[:, 3:].copy()
     label_names = Y.columns.tolist()
     return X, Y, label_names
 
@@ -86,7 +86,7 @@ def build_model():
 
     cv = GridSearchCV(pipeline, param_grid=parameters, cv=3, verbose=1)
 
-    return cv
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, label_names):
@@ -100,7 +100,7 @@ def evaluate_model(model, X_test, Y_test, label_names):
     :return: None
     '''
     Y_pred = model.predict(X_test)
-    print(classification_report(Y_test, Y_pred, labels=label_names))
+    print(classification_report(Y_test, Y_pred, target_names=label_names))
 
 
 def save_model(model, model_filepath):
@@ -110,7 +110,8 @@ def save_model(model, model_filepath):
     :param model_filepath: String filepath to save model
     :return: None
     '''
-    joblib.dump(model.best_estimator_, model_filepath, compress=1)
+    joblib.dump(model, model_filepath)
+    #joblib.dump(model.best_estimator_, model_filepath)
 
 
 def main():
