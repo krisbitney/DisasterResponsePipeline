@@ -32,7 +32,7 @@ def load_data(database_filepath):
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql('etl', engine)
     X = df.message.values
-    Y = df.iloc[:, 3:].copy()
+    Y = df.iloc[:, 4:].copy()
     label_names = Y.columns.tolist()
     return X, Y, label_names
 
@@ -81,12 +81,12 @@ def build_model():
 
     parameters = {
         'nlp__importance__tfidf__sublinear_tf': [True, False],
-        'clf__estimator__C': [0.1, 1, 10]
+        'clf__estimator__C': [0.1, 1, 10, 100, 1000]
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters, cv=3, verbose=1)
 
-    return pipeline
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, label_names):
@@ -110,8 +110,8 @@ def save_model(model, model_filepath):
     :param model_filepath: String filepath to save model
     :return: None
     '''
-    joblib.dump(model, model_filepath)
-    #joblib.dump(model.best_estimator_, model_filepath)
+    with open(model_filepath, 'wb') as file:
+        joblib.dump(model.best_estimator_, file)
 
 
 def main():

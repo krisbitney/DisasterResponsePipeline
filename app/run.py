@@ -15,6 +15,7 @@ nltk.download(['punkt', 'wordnet'])
 
 app = Flask(__name__)
 
+
 def tokenize(text):
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
@@ -25,6 +26,7 @@ def tokenize(text):
         clean_tokens.append(clean_tok)
 
     return clean_tokens
+
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
@@ -40,38 +42,20 @@ model = joblib.load("../models/classifier.pkl")
 def index():
     
     # extract data needed for visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
-
     category_counts = df.iloc[:, 4:].sum()
+
     category_counts = category_counts.sort_values(ascending=False)
     categories_top5 = category_counts[0:5]
     category_names_top5 = category_counts.index[0:5]
+    category_names_top5 = [s.replace('_', ' ') for s in category_names_top5]
+
     category_counts = category_counts.sort_values(ascending=True)
     categories_bottom5 = category_counts[0:5]
     category_names_bottom5 = category_counts.index[0:5]
-
+    category_names_bottom5 = [s.replace('_', ' ') for s in category_names_bottom5]
 
     # create visuals
     graphs = [
-        {
-            'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
-                )
-            ],
-
-            'layout': {
-                'title': 'Distribution of Message Genres',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Genre"
-                }
-            }
-        },
         {
             'data': [
                 Bar(
