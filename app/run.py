@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../models/')
+
 import json
 import plotly
 import pandas as pd
