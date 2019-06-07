@@ -43,6 +43,8 @@ The model achieves a weighted average precision score of 0.65, recall score of 0
 
 In other words, about 65% of messages belonging to a category are classified as belonging to that category by the model. Similarly, each classified message has about a 69% chance of being a true positive. The model performs much better than this average for common message categories. The model is unreliable for message categories with very few associated messages, and should not be used in those cases.
 
+The model performs well in key areas, including messages related to aid, food, water, shelter, weather, and earthquakes.
+
 
 ### Required libraries
 
