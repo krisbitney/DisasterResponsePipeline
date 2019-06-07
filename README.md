@@ -39,9 +39,9 @@ The ETL pipeline imports csv data, cleans the data, and stores it in a SQL datab
 
 I made the web application graphs with Plotly. Udacity provided the remainder of the web application components (i.e. HTML, CSS, Flask implementationm, Bootstrap.js implementation)
 
-The model achieves an average precision score of 0.54, recall score of 0.65, and F1 score of 0.59 across all 36 classes. 
+The model achieves a weighted average precision score of 0.65, recall score of 0.69, and F1 score of 0.66 across all 36 classes. 
 
-In other words, about 54% of messages belonging to a category are classified as belonging to that category by the model. Similarly, each classified message has about a 65% chance of being a true positive. The model performs much better than this average for common message categories. The model is unreliable for message categories with very few associated messages, and should not be used in those cases.
+In other words, about 65% of messages belonging to a category are classified as belonging to that category by the model. Similarly, each classified message has about a 69% chance of being a true positive. The model performs much better than this average for common message categories. The model is unreliable for message categories with very few associated messages, and should not be used in those cases.
 
 
 ### Required libraries
