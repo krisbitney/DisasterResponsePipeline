@@ -69,19 +69,21 @@ def build_model():
     pipeline = Pipeline([
         ('nlp', FeatureUnion([
             ('importance', Pipeline([
-                ('bow', CountVectorizer(tokenizer=tokenize, min_df=5, ngram_range=(1, 2))),
+                ('bow', CountVectorizer(tokenizer=tokenize, min_df=3, ngram_range=(1, 2))),
                 ('tfidf', TfidfTransformer())
             ])),
             ('sentiment', VaderSentiment(tokenize))
 
         ])),
         ('scale', Normalizer()),
-        ('clf', MultiOutputClassifier(LinearSVC(random_state=42, class_weight='balanced'), n_jobs=-1))
+        ('clf', MultiOutputClassifier(LinearSVC(random_state=42), n_jobs=-1))
     ])
 
     parameters = {
+        'penalty': ['l1', 'l2'],
+        'class weight': ['balanced', None],
         'nlp__importance__tfidf__sublinear_tf': [True, False],
-        'clf__estimator__C': [0.1, 1, 10, 100, 1000]
+        'clf__estimator__C': [0.01, 0.1, 1, 10, 100, 1000, 10000, 100000]
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters, cv=3, verbose=1)
