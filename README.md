@@ -30,7 +30,7 @@ Pipeline:
 3. Normalize data
 4. Train Linear Support Vector Classifier (SVC)
     * Select hyperparameters with Grid Search
-    * Evaluate with cross-validation and squared-hinge loss
+    * Cross-validation and squared-hinge loss
 5. Evaluate performance on test dataset
     * Metrics: precision, recall
 6. Import model to web application
