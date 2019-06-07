@@ -76,12 +76,10 @@ def build_model():
 
         ])),
         ('scale', Normalizer()),
-        ('clf', MultiOutputClassifier(LinearSVC(random_state=42), n_jobs=-1))
+        ('clf', MultiOutputClassifier(LinearSVC(random_state=42, class_weight='balanced'), n_jobs=-1))
     ])
 
     parameters = {
-        'penalty': ['l1', 'l2'],
-        'class weight': ['balanced', None],
         'nlp__importance__tfidf__sublinear_tf': [True, False],
         'clf__estimator__C': [0.01, 0.1, 1, 10, 100, 1000, 10000, 100000]
     }
